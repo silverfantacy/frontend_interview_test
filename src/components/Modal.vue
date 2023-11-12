@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { reactive, ref, inject, watch } from 'vue'
 import type { UploadInstance, UploadProps, UploadRawFile } from 'element-plus'
-import { genFileId, ElMessageBox } from 'element-plus'
-import { Search, Plus } from '@element-plus/icons-vue'
+import { genFileId } from 'element-plus'
+import { Plus } from '@element-plus/icons-vue'
 import { useGlobalStore } from '../stores/index'
 import { storeToRefs } from "pinia";
-import * as yup from "yup";
+import { adSchema } from '../plugins/vee-validate-schema'
 
 const dialogVisible: any = inject('dialogVisible')
 
@@ -21,12 +21,6 @@ const formData = reactive({
 const upload = ref<UploadInstance>()
 const fileList = ref<UploadProps['fileList']>([])
 const dialogImageUrl = ref('')
-
-const schema = yup.object({
-  title: yup.string().required('廣告標題為必填'),
-  status: yup.boolean().required('廣告狀態為必填'),
-  url: yup.string().url('請輸入有效的URL'),
-});
 
 
 const globalStore = useGlobalStore();
@@ -86,7 +80,7 @@ const handlePictureCardPreview: UploadProps['onPreview'] = (uploadFile) => {
   dialogVisible.value = true
 }
 
-import { blobUrlToBase64 } from '../plugins/blobUrlToBase64.ts'
+import { blobUrlToBase64 } from '../plugins/blobUrlToBase64'
 const handleFormSubmit = async (values: any, actions: any) => {
   let data = {
     id: null,
@@ -96,11 +90,13 @@ const handleFormSubmit = async (values: any, actions: any) => {
     img: values.img?.url
   }
 
+  // 新圖片才需要轉換
+  if (fileList.value[0]) {
+    data.img = await blobUrlToBase64(fileList.value[0].url)
+  }
+
   if (selectedAdData.value.id) {
     data.id = selectedAdData.value.id
-    if (fileList.value[0]) {
-      data.img = await blobUrlToBase64(fileList.value[0].url)
-    }
     await updateAdData(selectedAdData.value.id, data)
   } else {
     await createAdData(data)
@@ -115,7 +111,7 @@ const handleFormSubmit = async (values: any, actions: any) => {
 <template>
   <el-dialog v-model="dialogVisible" :title="`${formTitle}資訊`" width="70%" center>
     <v-form as="el-form" label-position="top" require-asterisk-position="right" :inline="true" id="ad-form" ref="adForm"
-      :validation-schema="schema" @submit="handleFormSubmit">
+      :validation-schema="adSchema" @submit="handleFormSubmit">
 
       <v-field name="title" v-slot="{ value, field, errorMessage }">
         <el-form-item :error="errorMessage" label="廣告標題" required>

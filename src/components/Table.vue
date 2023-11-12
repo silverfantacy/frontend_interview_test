@@ -59,7 +59,7 @@ const handleDelete = (index: number, row: Item) => {
       </el-table-column>
       <el-table-column prop="title" label="標題" width="">
         <template #default="scope">
-          <a :href="scope.row.url">{{ scope.row.title }}</a><br>
+          <a :href="scope.row.url" target="_blank">{{ scope.row.title }}</a><br>
           <el-tag :type="scope.row.status ? 'success' : 'danger'">{{ scope.row.status ? '已啟用' : '未啟用' }}</el-tag>
         </template>
       </el-table-column>

@@ -124,7 +124,6 @@ export const useGlobalStore = defineStore('global', () => {
 
     const getAds = async () => {
         await adsApi.getAds().then(res => {
-            console.log(res)
             Object.assign(state.adData, res)
         })
     }
