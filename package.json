@@ -4,9 +4,10 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "volar-preview-vite",
+    "dev": "concurrently \"volar-preview-vite\" \"yarn jsondb\"",
     "build": "vue-tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "jsondb": "json-server --watch ./src/service/json-server/data.json"
   },
   "dependencies": {
     "@vee-validate/i18n": "^4.11.8",
@@ -21,6 +22,8 @@
     "@codesandbox/vue-preview": "^0.1.1-alpha.16",
     "@vitejs/plugin-vue": "^4.3.4",
     "autoprefixer": "^10.4.16",
+    "concurrently": "^8.2.2",
+    "json-server": "^0.17.4",
     "postcss": "^8.4.31",
     "tailwindcss": "^3.3.5",
     "typescript": "^5.2.2",

@@ -14,6 +14,11 @@ interface Item {
 }
 const globalStore = useGlobalStore();
 const { adData, filters } = storeToRefs(globalStore);
+const { getAds: getAds } = globalStore
+
+onMounted(() => {
+  getAds()
+})
 
 const tableData = computed(() => {
   let data = adData.value.filter((item) => {

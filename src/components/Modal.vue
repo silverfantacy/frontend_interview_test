@@ -31,7 +31,7 @@ const schema = yup.object({
 
 const globalStore = useGlobalStore();
 const { filters, adData, selectedAdData } = storeToRefs(globalStore);
-const { setSelectedAdData: setSelectedAdData, clearSelectedAdData: clearSelectedAdData, createAdData: createAdData, updateAdData: updateAdData } = globalStore
+const { setSelectedAdData: setSelectedAdData, clearSelectedAdData: clearSelectedAdData, createAdData: createAdData, updateAdData: updateAdData, getAds: getAds } = globalStore
 
 // modal 開關
 watch(dialogVisible, (newValue) => {
@@ -86,7 +86,8 @@ const handlePictureCardPreview: UploadProps['onPreview'] = (uploadFile) => {
   dialogVisible.value = true
 }
 
-const handleFormSubmit = (values: any, actions: any) => {
+import { blobUrlToBase64 } from '../plugins/blobUrlToBase64.ts'
+const handleFormSubmit = async (values: any, actions: any) => {
   let data = {
     id: null,
     title: values.title,
@@ -98,11 +99,11 @@ const handleFormSubmit = (values: any, actions: any) => {
   if (selectedAdData.value.id) {
     data.id = selectedAdData.value.id
     if (fileList.value[0]) {
-      data.img = fileList.value[0].url
+      data.img = await blobUrlToBase64(fileList.value[0].url)
     }
-    updateAdData(selectedAdData.value.id, data)
+    await updateAdData(selectedAdData.value.id, data)
   } else {
-    createAdData(data)
+    await createAdData(data)
   }
 
   actions.resetForm()
