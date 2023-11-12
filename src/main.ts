@@ -1,5 +1,24 @@
 import { createApp } from 'vue'
-import './style.css'
+// tailwind
+import './css/tailwind.css'
+
+// Element Plus
+import ElementPlus from 'element-plus'
+import 'element-plus/dist/index.css'
+
+
+
+// Pinia
+import pinia from './stores'
+
+// VeeValidate
+import veeValidate from "./plugins/vee-validate";
+
 import App from './App.vue'
 
-createApp(App).mount('#app')
+const app = createApp(App)
+
+app.use(ElementPlus)
+app.use(pinia)
+app.use(veeValidate)
+app.mount('#app')
